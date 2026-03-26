@@ -91,7 +91,7 @@
             "patterns": [
                 {
                     "name": "meta.variable.declaration.aria",
-                    "match": "\\b(int8|int16|int32|int64|int128|uint8|uint16|uint32|uint64|uint128|flt32|flt64|bool|string|tbb8|tbb16|tbb32|tbb64|fix256|tfp64|frac8)\\s*(:)\\s*([a-zA-Z_][a-zA-Z0-9_]*)",
+                    "match": "\\b(int1|int2|int4|int8|int16|int32|int64|int128|int256|int512|int1024|int2048|int4096|uint1|uint2|uint4|uint8|uint16|uint32|uint64|uint128|uint256|uint512|uint1024|uint2048|uint4096|flt16|flt32|flt64|flt128|flt256|flt512|bool|string|void|tbb8|tbb16|tbb32|tbb64|tbb128|tbb256|fix256|tfp32|tfp64|frac8|frac16|frac32|frac64|fixed|trit|tryte|nit|nyte|array|binary|buffer|matrix|tensor|tmatrix|ttensor|vec2|vec3|vec9|dyn|obj|opaque|Type)\\s*(:)\\s*([a-zA-Z_][a-zA-Z0-9_]*)",
                     "captures": {
                         "1": { "name": "storage.type.aria" },
                         "2": { "name": "punctuation.separator.type.aria" },
@@ -166,7 +166,7 @@
                 {
                     "comment": "Control flow",
                     "name": "keyword.control.aria",
-                    "match": "\\b(if|else|when|then|end|till|while|for|in|loop|pick|case|default|break|continue|fall|defer|async|await)\\b"
+                    "match": "\\b(if|else|when|then|end|till|while|for|in|loop|pick|case|default|break|continue|fall|defer|async|await|catch|return)\\b"
                 },
                 {
                     "comment": "TOS explicit bypass builtins — drop(), raw(), ok()",
@@ -194,6 +194,26 @@
                     "match": "\\b(struct|enum|trait|impl|type|const)\\b"
                 },
                 {
+                    "comment": "Contract annotations",
+                    "name": "keyword.other.contract.aria",
+                    "match": "\\b(requires|ensures|invariant)\\b"
+                },
+                {
+                    "comment": "Compilation and optimization modifiers",
+                    "name": "keyword.modifier.aria",
+                    "match": "\\b(comptime|inline|noinline|cfg)\\b"
+                },
+                {
+                    "comment": "Concurrency and I/O keywords",
+                    "name": "keyword.other.concurrency.aria",
+                    "match": "\\b(process|pipe|stream|debug)\\b"
+                },
+                {
+                    "comment": "Atomic memory ordering",
+                    "name": "keyword.other.atomic-ordering.aria",
+                    "match": "\\b(acq_rel|acquire|relaxed|release|seq_cst)\\b"
+                },
+                {
                     "comment": "Executable memory allocation mode (JIT, use wild for W^X)",
                     "name": "keyword.other.memory-mode.aria",
                     "match": "\\b(wild|wildx)\\b"
@@ -216,7 +236,7 @@
                 {
                     "comment": "Deterministic fixed-point and twisted-float",
                     "name": "storage.type.fixedpoint.aria",
-                    "match": "\\b(fix256|tfp64|frac8)\\b"
+                    "match": "\\b(fix256|tfp32|tfp64|frac8|frac16|frac32|frac64|fixed)\\b"
                 },
                 {
                     "comment": "Balanced ternary/nonary scalars",
@@ -226,22 +246,32 @@
                 {
                     "comment": "Signed integers",
                     "name": "storage.type.integer.aria",
-                    "match": "\\b(int8|int16|int32|int64|int128|int256|int512)\\b"
+                    "match": "\\b(int1|int2|int4|int8|int16|int32|int64|int128|int256|int512|int1024|int2048|int4096)\\b"
                 },
                 {
                     "comment": "Unsigned integers",
                     "name": "storage.type.unsigned.aria",
-                    "match": "\\b(uint8|uint16|uint32|uint64|uint128|uint256|uint512)\\b"
+                    "match": "\\b(uint1|uint2|uint4|uint8|uint16|uint32|uint64|uint128|uint256|uint512|uint1024|uint2048|uint4096)\\b"
                 },
                 {
                     "comment": "Floating-point",
                     "name": "storage.type.float.aria",
-                    "match": "\\b(flt16|flt32|flt64|flt128)\\b"
+                    "match": "\\b(flt16|flt32|flt64|flt128|flt256|flt512)\\b"
                 },
                 {
                     "comment": "Primitive types",
                     "name": "storage.type.primitive.aria",
                     "match": "\\b(bool|string|void)\\b"
+                },
+                {
+                    "comment": "Container and compound types",
+                    "name": "storage.type.container.aria",
+                    "match": "\\b(array|binary|buffer|matrix|tensor|tmatrix|ttensor|vec2|vec3|vec9)\\b"
+                },
+                {
+                    "comment": "Type system keywords",
+                    "name": "storage.type.meta.aria",
+                    "match": "\\b(dyn|obj|opaque|Type)\\b"
                 },
                 {
                     "comment": "Generic container types — only when followed by < to reduce false positives",

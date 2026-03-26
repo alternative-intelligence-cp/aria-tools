@@ -221,7 +221,7 @@
                     "patterns": [
                         {
                             "name": "variable.other.interpolation.aria",
-                            "match": "\\$\\{[^}]+\\}"
+                            "match": "&\\{[^}]+\\}"
                         }
                     ]
                 }

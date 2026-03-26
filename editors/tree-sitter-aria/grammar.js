@@ -45,15 +45,23 @@ module.exports = grammar({
             $.trait_declaration,
             $.impl_block,
             $.module_declaration,
+            $.use_statement,
             $.import_statement,
             $.export_statement,
             $.variable_declaration,
             $.const_declaration,
             $.expression_statement,
+            $.pass_statement,
+            $.fail_statement,
             $.return_statement,
             $.break_statement,
             $.continue_statement,
             $.defer_statement,
+            $.loop_statement,
+            $.while_statement,
+            $.till_statement,
+            $.for_statement,
+            $.failsafe_block,
         ),
 
         // Function declaration: func:name = (params) -> return_type { body }
@@ -233,10 +241,16 @@ module.exports = grammar({
         ),
 
         primitive_type: $ => choice(
-            'bool', 'char', 'str', 'void',
-            /int(1|2|4|8|16|32|64|128|256|512)/,
-            /uint(1|2|4|8|16|32|64|128|256|512)/,
-            /flt(16|32|64|128)/,
+            'bool', 'string', 'void',
+            /int(1|2|4|8|16|32|64|128|256|512|1024|2048|4096)/,
+            /uint(1|2|4|8|16|32|64|128|256|512|1024|2048|4096)/,
+            /flt(16|32|64|128|256|512)/,
+            /frac(8|16|32|64)/,
+            /tfp(32|64)/,
+            'fix256', 'fixed',
+            'array', 'binary', 'buffer', 'matrix', 'tensor',
+            'tmatrix', 'ttensor', 'vec2', 'vec3', 'vec9',
+            'dyn', 'obj', 'opaque', 'Type',
         ),
 
         tbb_type: $ => /tbb(8|16|32|64|128|256)/,
@@ -451,6 +465,58 @@ module.exports = grammar({
         break_statement: $ => seq('break', ';'),
         continue_statement: $ => seq('continue', ';'),
 
+        // Aria return mechanisms
+        pass_statement: $ => seq('pass', '(', optional($._expression), ')', ';'),
+        fail_statement: $ => seq('fail', '(', optional($._expression), ')', ';'),
+
+        // Loop forms
+        loop_statement: $ => seq(
+            'loop',
+            '(',
+            field('start', $._expression), ',',
+            field('end', $._expression), ',',
+            field('step', $._expression),
+            ')',
+            field('body', $.block),
+        ),
+
+        while_statement: $ => seq(
+            'while',
+            '(',
+            field('condition', $._expression),
+            ')',
+            field('body', $.block),
+        ),
+
+        till_statement: $ => seq(
+            'till',
+            '(',
+            field('condition', $._expression),
+            ')',
+            field('body', $.block),
+        ),
+
+        for_statement: $ => seq(
+            'for',
+            '(',
+            field('variable', $.identifier),
+            'in',
+            field('iterable', $._expression),
+            ')',
+            field('body', $.block),
+        ),
+
+        // Failsafe — required error handler
+        failsafe_block: $ => seq('failsafe', field('body', $.block)),
+
+        // Use statement (Aria's import)
+        use_statement: $ => seq(
+            'use',
+            $.string_literal,
+            optional(seq('.', '*')),
+            ';',
+        ),
+
         defer_statement: $ => seq(
             'defer',
             $.block,
@@ -470,6 +536,8 @@ module.exports = grammar({
             $.boolean_literal,
             $.null_literal,
             $.error_literal,
+            $.unknown_literal,
+            $.unknown_literal,
         ),
 
         integer_literal: $ => token(choice(
@@ -514,8 +582,9 @@ module.exports = grammar({
         )),
 
         boolean_literal: $ => choice('true', 'false'),
-        null_literal: $ => 'null',
+        null_literal: $ => choice('NIL', 'NULL'),
         error_literal: $ => 'ERR',
+        unknown_literal: $ => 'unknown',
 
         // Identifier
         identifier: $ => /[a-zA-Z_][a-zA-Z0-9_]*/,

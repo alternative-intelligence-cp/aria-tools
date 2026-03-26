@@ -4,36 +4,33 @@ Developer tools for the [Aria programming language](https://github.com/alternati
 
 ## Components
 
-### aria-safety
-Static safety audit tool for Aria source files. Written in C.
+### aria-ls (Language Server)
+LSP-compatible language server bundled with the main compiler. Provides diagnostics, hover, go-to-definition, completion, document symbols, references, and signature help. Source lives in the [aria repo](https://github.com/alternative-intelligence-cp/aria) at `src/tools/lsp/`.
+
+### aria-safety (Static Auditor)
+Static safety audit tool for Aria source files. Written in C. Scans for `wild`/`raw`/`drop`/`ok` usages, relaxed atomics, FFI boundaries, unsafe blocks, and trivial failsafe handlers.
 
 ```bash
 cd aria-safety && make
 ./aria-safety path/to/file.aria
 ./aria-safety --json path/to/project/   # JSON output
+./aria-safety --summary path/to/project/# per-tag statistics
 ```
 
-### aria-mcp
-[Model Context Protocol](https://modelcontextprotocol.io/) server for AI-assisted Aria development. Written in Python.
+### aria-mcp (MCP Server)
+[Model Context Protocol](https://modelcontextprotocol.io/) server for AI-assisted Aria development. Zero external dependencies — pure Python 3.8+ stdlib. Provides 5 tools: `aria_compile`, `aria_check`, `aria_docs`, `aria_format`, `aria_ask`.
 
 ```bash
-pip install mcp
-python aria-mcp/aria_mcp.py
+python3 aria-mcp/aria_mcp.py
 ```
 
-### editors
-Editor support for Aria:
-- **tree-sitter-aria** — Tree-sitter grammar for syntax highlighting
-- **emacs** — Emacs major mode (`aria-mode.el`)
-- **vscode** — Legacy VS Code syntax (see vscode-aria for full extension)
+### VS Code Extension
+Full VS Code extension with TextMate syntax highlighting, LSP integration (aria-ls), DAP debug adapter integration, and language configuration. Located in `editors/vscode/`.
 
-### vscode-aria
-Full VS Code extension with syntax highlighting, snippets, and language configuration.
-
-```bash
-cd vscode-aria
-# Install via VS Code: Extensions → Install from VSIX
-```
+### Editor Support
+- **tree-sitter-aria** — Tree-sitter grammar for Neovim, Helix, and other tree-sitter editors
+- **emacs** — Emacs major mode (`aria-mode.el`) with full syntax highlighting, indentation, and typed literal support
+- **vscode-aria** — Legacy VS Code syntax extension (superseded by `editors/vscode/`)
 
 ## License
 

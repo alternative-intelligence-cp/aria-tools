@@ -9,6 +9,7 @@ Tools:
   aria_compile(source)            — compile Aria source via ariac, structured result
   aria_check(source)              — run aria-safety audit, structured findings
   aria_docs(query)                — section-level search over aria_ref.md
+  aria_format(source)             — basic indentation/whitespace normalizer
   aria_ask(question[, context])   — query the Aria specialist fine-tuned model
                                     (optional; requires specialist server to be
                                      available at SPECIALIST_SCRIPT / PATH)
@@ -38,7 +39,10 @@ from pathlib import Path
 # ── binary / path resolution ──────────────────────────────────────────────
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-REPO_ROOT   = SCRIPT_DIR.parent.parent  # tools/aria-mcp/ → tools/ → repo root
+# aria-mcp/ sits inside aria-tools repo, but ariac lives in the aria repo.
+# Try the sibling-repo layout first: REPOS/aria/build/ariac
+REPO_ROOT   = SCRIPT_DIR.parent.parent  # aria-tools/aria-mcp/ → aria-tools/ → REPOS/
+ARIA_ROOT   = REPO_ROOT / "aria"         # REPOS/aria/
 
 
 def _find_bin(env_var: str, *candidates: Path) -> str | None:
@@ -52,10 +56,12 @@ def _find_bin(env_var: str, *candidates: Path) -> str | None:
 
 
 ARIAC_BIN   = _find_bin("ARIAC_BIN",
+                         ARIA_ROOT / "build" / "ariac",
                          REPO_ROOT / "build" / "ariac") \
               or shutil.which("ariac")
 
 SAFETY_BIN  = _find_bin("ARIA_SAFETY_BIN",
+                         SCRIPT_DIR.parent / "aria-safety" / "aria-safety",
                          REPO_ROOT / "tools" / "aria-safety" / "aria-safety") \
               or shutil.which("aria-safety")
 
@@ -270,7 +276,7 @@ def aria_compile(source: str) -> dict:
     except subprocess.TimeoutExpired:
         return {
             "success":  False,
-            "errors":   ["compiler timed out (> 30 s)"],
+            "errors":   [{"message": "compiler timed out (> 30 s)"}],
             "warnings": [],
             "output":   "",
         }
@@ -332,7 +338,7 @@ def aria_check(source: str) -> dict:
         except OSError:
             pass
 
-# ── tool: aria_docs ───────────────────────────────────────────────────────
+# ── tool: aria_format ─────────────────────────────────────────────────────
 
 def aria_format(source: str) -> dict:
     """Basic Aria source code formatter: normalizes indentation and whitespace."""
@@ -532,7 +538,7 @@ TOOL_DEFINITIONS = [
     },
 ])
 
-SERVER_INFO  = {"name": "aria-mcp", "version": "0.2.2"}
+SERVER_INFO  = {"name": "aria-mcp", "version": "0.2.15"}
 CAPABILITIES = {"tools": {}, "resources": {}}
 
 

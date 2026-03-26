@@ -1,9 +1,10 @@
 # aria-mcp
 
 MCP (Model Context Protocol) server for the Aria language toolchain.
-Exposes `aria_compile`, `aria_check`, and `aria_docs` as MCP tools so any
-MCP-capable AI assistant can compile, audit, and answer questions about
-Aria code directly within a conversation.
+Exposes `aria_compile`, `aria_check`, `aria_docs`, `aria_format`, and
+`aria_ask` as MCP tools so any MCP-capable AI assistant can compile,
+audit, format, and answer questions about Aria code directly within a
+conversation. Also exposes `aria_ref.md` sections as MCP resources.
 
 **Zero external dependencies** — pure Python 3.8+ stdlib.
 
@@ -14,6 +15,8 @@ Aria code directly within a conversation.
 | `aria_compile(source)` | Compile Aria source via `ariac`; returns `{ success, errors[], warnings[], output }` |
 | `aria_check(source)` | Run `aria-safety` audit; returns `{ issues: [{ line, tag, message }] }` |
 | `aria_docs(query)` | Section-level search over `aria_ref.md`; returns matching excerpts |
+| `aria_format(source)` | Basic indentation/whitespace normalizer |
+| `aria_ask(question[, context])` | Query the Aria specialist fine-tuned model (optional; set `ARIA_ASK_DISABLED=1` to hide) |
 
 ### aria_compile
 

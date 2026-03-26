@@ -2,7 +2,7 @@
 
 ;; Author: Aria Language Project
 ;; Keywords: languages aria
-;; Version: 0.2.0
+;; Version: 0.2.15
 
 ;;; Commentary:
 
@@ -61,12 +61,12 @@
 ;;;; Constants
 
 (defconst aria-mode-integer-types
-  '("int8" "int16" "int32" "int64" "int128" "int256" "int512"
-    "uint8" "uint16" "uint32" "uint64" "uint128" "uint256" "uint512")
+  '("int1" "int2" "int4" "int8" "int16" "int32" "int64" "int128" "int256" "int512" "int1024" "int2048" "int4096"
+    "uint1" "uint2" "uint4" "uint8" "uint16" "uint32" "uint64" "uint128" "uint256" "uint512" "uint1024" "uint2048" "uint4096")
   "Aria integer type names.")
 
 (defconst aria-mode-float-types
-  '("flt16" "flt32" "flt64" "flt128")
+  '("flt16" "flt32" "flt64" "flt128" "flt256" "flt512")
   "Aria floating-point type names.")
 
 (defconst aria-mode-tbb-types
@@ -74,8 +74,18 @@
   "Aria TBB (Twisted Balanced Binary) type names.")
 
 (defconst aria-mode-special-types
-  '("fix256" "tfp64" "frac8" "bool" "string" "void" "trit" "tryte" "nit" "nyte")
+  '("fix256" "tfp32" "tfp64" "frac8" "frac16" "frac32" "frac64" "fixed"
+    "bool" "string" "void" "trit" "tryte" "nit" "nyte")
   "Aria special and balanced-numeric type names.")
+
+(defconst aria-mode-container-types
+  '("array" "binary" "buffer" "matrix" "tensor" "tmatrix" "ttensor"
+    "vec2" "vec3" "vec9")
+  "Aria container and compound type names.")
+
+(defconst aria-mode-type-meta
+  '("dyn" "obj" "opaque" "Type")
+  "Aria type system meta-keywords.")
 
 (defconst aria-mode-generic-types
   '("Result" "Handle" "arena" "atomic" "simd" "quantum" "complex")
@@ -85,13 +95,15 @@
   (append aria-mode-integer-types
           aria-mode-float-types
           aria-mode-tbb-types
-          aria-mode-special-types)
+          aria-mode-special-types
+          aria-mode-container-types
+          aria-mode-type-meta)
   "All non-generic Aria type names.")
 
 (defconst aria-mode-control-keywords
   '("if" "else" "when" "then" "end" "pick" "case" "default"
     "while" "till" "loop" "for" "in" "break" "continue" "fall"
-    "defer" "async" "await")
+    "defer" "async" "await" "catch" "return")
   "Aria control-flow keywords.")
 
 (defconst aria-mode-declaration-keywords
@@ -105,7 +117,11 @@
 (defconst aria-mode-other-keywords
   '("pub" "priv" "as" "is" "ref" "mut" "move" "copy"
     "wild" "wildx" "gc" "stack"
-    "superpose" "collapse")
+    "superpose" "collapse"
+    "comptime" "inline" "noinline" "cfg" "fixed"
+    "requires" "ensures" "invariant"
+    "process" "pipe" "stream" "debug"
+    "acq_rel" "acquire" "relaxed" "release" "seq_cst")
   "Aria miscellaneous keywords.")
 
 (defconst aria-mode-return-keywords
