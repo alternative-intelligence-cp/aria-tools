@@ -1,0 +1,124 @@
+{
+    "Function Declaration": {
+        "prefix": "func",
+        "body": [
+            "func:${1:name} = ${2:int32}(${3:params}) {",
+            "    $0",
+            "};"
+        ],
+        "description": "Aria function declaration"
+    },
+    "Public Function": {
+        "prefix": "pubfunc",
+        "body": [
+            "pub func:${1:name} = ${2:int32}(${3:params}) {",
+            "    $0",
+            "};"
+        ],
+        "description": "Public Aria function"
+    },
+    "Failsafe Block": {
+        "prefix": "failsafe",
+        "body": [
+            "failsafe {",
+            "    pass(${1:1});",
+            "};"
+        ],
+        "description": "Required failsafe error handler"
+    },
+    "Main with Failsafe": {
+        "prefix": "main",
+        "body": [
+            "func:main = int32() {",
+            "    $0",
+            "    pass(0);",
+            "};",
+            "",
+            "failsafe {",
+            "    pass(1);",
+            "};"
+        ],
+        "description": "Main function with failsafe"
+    },
+    "Till Loop": {
+        "prefix": "till",
+        "body": [
+            "till(${1:limit}, ${2:1}) {",
+            "    $0",
+            "};"
+        ],
+        "description": "Till loop ($ is the iterator variable)"
+    },
+    "If Statement": {
+        "prefix": "if",
+        "body": [
+            "if (${1:condition}) {",
+            "    $0",
+            "};"
+        ],
+        "description": "If statement"
+    },
+    "If-Else Statement": {
+        "prefix": "ifelse",
+        "body": [
+            "if (${1:condition}) {",
+            "    $2",
+            "} else {",
+            "    $0",
+            "};"
+        ],
+        "description": "If-else statement"
+    },
+    "Struct Declaration": {
+        "prefix": "struct",
+        "body": [
+            "struct ${1:Name} {",
+            "    ${2:Type}:${3:field};",
+            "    $0",
+            "};"
+        ],
+        "description": "Struct declaration"
+    },
+    "Use Import": {
+        "prefix": "use",
+        "body": "use ${1:module};",
+        "description": "Import a module"
+    },
+    "Print": {
+        "prefix": "print",
+        "body": "print(\"${1:message}\\n\");",
+        "description": "Print with newline"
+    },
+    "Variable Declaration": {
+        "prefix": "var",
+        "body": "${1:int32}:${2:name} = ${3:value};",
+        "description": "Variable declaration (Type:name = value)"
+    },
+    "Async Function": {
+        "prefix": "asyncfunc",
+        "body": [
+            "async func:${1:name} = ${2:int32}(${3:params}) {",
+            "    $0",
+            "};"
+        ],
+        "description": "Async function declaration"
+    },
+    "Comptime Block": {
+        "prefix": "comptime",
+        "body": [
+            "comptime {",
+            "    $0",
+            "};"
+        ],
+        "description": "Compile-time evaluated block"
+    },
+    "Macro Definition": {
+        "prefix": "macro",
+        "body": [
+            "%macro ${1:name} ${2:0}",
+            "    $0",
+            "%endmacro"
+        ],
+        "description": "Preprocessor macro definition"
+    }
+}

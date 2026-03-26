@@ -2,7 +2,7 @@
     "name": "aria-lang",
     "displayName": "Aria Language Support",
     "description": "Language support for Aria - a systems programming language with TBB arithmetic and hybrid memory model",
-    "version": "0.2.1.1",
+    "version": "0.2.11",
     "publisher": "aria-lang",
     "license": "MIT",
     "repository": {
@@ -23,6 +23,7 @@
         "tbb",
         "memory safety"
     ],
+    "main": "./out/extension.js",
     "activationEvents": [
         "onDebugResolve:aria"
     ],

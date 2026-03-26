@@ -2,11 +2,11 @@
     "name": "aria-language",
     "displayName": "Aria Language Support",
     "description": "Syntax highlighting and language support for the Aria programming language",
-    "version": "0.0.1",
+    "version": "0.2.13",
     "publisher": "alternative-intelligence",
     "repository": {
         "type": "git",
-        "url": "https://github.com/alternative-intelligence-cp/aria"
+        "url": "https://github.com/alternative-intelligence-cp/aria-tools"
     },
     "engines": {
         "vscode": "^1.80.0"
@@ -33,6 +33,12 @@
                 "language": "aria",
                 "scopeName": "source.aria",
                 "path": "./syntaxes/aria.tmLanguage.json"
+            }
+        ],
+        "snippets": [
+            {
+                "language": "aria",
+                "path": "./snippets/aria.json"
             }
         ]
     }

@@ -50,31 +50,33 @@
         }
     ],
     "surroundingPairs": [
-        [
-            "{",
-            "}"
-        ],
-        [
-            "[",
-            "]"
-        ],
-        [
-            "(",
-            ")"
-        ],
-        [
-            "\"",
-            "\""
-        ],
-        [
-            "'",
-            "'"
-        ]
+        ["{", "}"],
+        ["[", "]"],
+        ["(", ")"],
+        ["\"", "\""],
+        ["'", "'"],
+        ["`", "`"]
     ],
+    "wordPattern": "(-?\\d*\\.\\d\\w*)|([^\\`\\~\\!\\@\\#\\%\\^\\&\\*\\(\\)\\-\\=\\+\\[\\{\\]\\}\\\\\\|\\;\\:\\'\\\"\\,\\.\\<\\>\\/\\?\\s]+)",
+    "indentationRules": {
+        "increaseIndentPattern": "\\{\\s*$",
+        "decreaseIndentPattern": "^\\s*\\}"
+    },
     "folding": {
         "markers": {
             "start": "^\\s*//\\s*#?region\\b",
             "end": "^\\s*//\\s*#?endregion\\b"
         }
-    }
+    },
+    "onEnterRules": [
+        {
+            "beforeText": "\\{\\s*$",
+            "afterText": "^\\s*\\}",
+            "action": { "indent": "indentOutdent", "appendText": "    " }
+        },
+        {
+            "beforeText": "\\{\\s*$",
+            "action": { "indent": "indent" }
+        }
+    ]
 }
