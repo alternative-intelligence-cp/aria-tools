@@ -4,10 +4,13 @@
     "scopeName": "source.aria",
     "patterns": [
         { "include": "#comments" },
+        { "include": "#preprocessor" },
+        { "include": "#magic-constants" },
         { "include": "#strings" },
         { "include": "#function-declarations" },
         { "include": "#variable-declarations" },
         { "include": "#numbers" },
+        { "include": "#borrow-annotations" },
         { "include": "#keywords" },
         { "include": "#types" },
         { "include": "#function-calls" },
@@ -27,6 +30,31 @@
                     "name": "comment.block.aria",
                     "begin": "/\\*",
                     "end": "\\*/"
+                }
+            ]
+        },
+
+        "preprocessor": {
+            "patterns": [
+                {
+                    "comment": "Preprocessor directives: %define, %macro, %ifdef, etc.",
+                    "name": "keyword.control.directive.aria",
+                    "match": "%(?:define|undef|macro|endmacro|ifdef|ifndef|else|endif|include|rep|endrep|push|pop|assign|rotate)\\b"
+                },
+                {
+                    "comment": "Macro parameter references: %1, %0, %*, #%1, ##",
+                    "name": "variable.parameter.macro.aria",
+                    "match": "(?:#%\\d+|##|%(?:\\*|\\d+))"
+                }
+            ]
+        },
+
+        "magic-constants": {
+            "patterns": [
+                {
+                    "comment": "Compile-time magic constants",
+                    "name": "constant.language.magic.aria",
+                    "match": "\\b(__FILE__|__LINE__|__COUNTER__)\\b"
                 }
             ]
         },
@@ -91,7 +119,7 @@
             "patterns": [
                 {
                     "name": "meta.variable.declaration.aria",
-                    "match": "\\b(int1|int2|int4|int8|int16|int32|int64|int128|int256|int512|int1024|int2048|int4096|uint1|uint2|uint4|uint8|uint16|uint32|uint64|uint128|uint256|uint512|uint1024|uint2048|uint4096|flt16|flt32|flt64|flt128|flt256|flt512|bool|string|void|tbb8|tbb16|tbb32|tbb64|tbb128|tbb256|fix256|tfp32|tfp64|frac8|frac16|frac32|frac64|fixed|trit|tryte|nit|nyte|array|binary|buffer|matrix|tensor|tmatrix|ttensor|vec2|vec3|vec9|dyn|obj|opaque|Type)\\s*(:)\\s*([a-zA-Z_][a-zA-Z0-9_]*)",
+                    "match": "\\b(int1|int2|int4|int8|int16|int32|int64|int128|int256|int512|int1024|int2048|int4096|uint1|uint2|uint4|uint8|uint16|uint32|uint64|uint128|uint256|uint512|uint1024|uint2048|uint4096|flt16|flt32|flt64|flt128|flt256|flt512|bool|str|string|void|tbb8|tbb16|tbb32|tbb64|tbb128|tbb256|fix256|tfp32|tfp64|frac8|frac16|frac32|frac64|fixed|trit|tryte|nit|nyte|array|binary|buffer|matrix|tensor|tmatrix|ttensor|vec2|vec3|vec9|dyn|obj|opaque|Type)\\s*(:)\\s*([a-zA-Z_][a-zA-Z0-9_]*)",
                     "captures": {
                         "1": { "name": "storage.type.aria" },
                         "2": { "name": "punctuation.separator.type.aria" },
@@ -152,6 +180,21 @@
                     "comment": "Bare integer (no suffix)",
                     "name": "constant.numeric.integer.aria",
                     "match": "\\b\\d[\\d_]*\\b"
+                }
+            ]
+        },
+
+        "borrow-annotations": {
+            "patterns": [
+                {
+                    "comment": "$mut, $ref borrow annotations",
+                    "name": "storage.modifier.borrow.aria",
+                    "match": "\\$(mut|ref)\\b"
+                },
+                {
+                    "comment": "$ as borrow/iteration variable",
+                    "name": "variable.language.iterator.aria",
+                    "match": "\\$(?![a-zA-Z{])"
                 }
             ]
         },
@@ -219,6 +262,11 @@
                     "match": "\\b(wild|wildx)\\b"
                 },
                 {
+                    "comment": "Failsafe — required error handler",
+                    "name": "keyword.control.failsafe.aria",
+                    "match": "\\bfailsafe\\b"
+                },
+                {
                     "comment": "Other language keywords",
                     "name": "keyword.other.aria",
                     "match": "\\b(as|is|ref|mut|move|copy|superpose|collapse)\\b"
@@ -259,9 +307,9 @@
                     "match": "\\b(flt16|flt32|flt64|flt128|flt256|flt512)\\b"
                 },
                 {
-                    "comment": "Primitive types",
+                    "comment": "Primitive types (str is shorthand alias for string)",
                     "name": "storage.type.primitive.aria",
-                    "match": "\\b(bool|string|void)\\b"
+                    "match": "\\b(bool|str|string|void)\\b"
                 },
                 {
                     "comment": "Container and compound types",
@@ -355,17 +403,7 @@
                 {
                     "comment": "Pin operator — pins value at fixed address",
                     "name": "keyword.operator.pin.aria",
-                    "match": "#"
-                },
-                {
-                    "comment": "Safe reference operator $",
-                    "name": "keyword.operator.safe-ref.aria",
-                    "match": "\\$(?![{])"
-                },
-                {
-                    "comment": "Implicit loop counter $",
-                    "name": "variable.language.loop-counter.aria",
-                    "match": "\\$(?![{])"
+                    "match": "#(?!%)"
                 },
                 {
                     "comment": "Arithmetic",
