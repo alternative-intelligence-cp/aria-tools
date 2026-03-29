@@ -39,7 +39,7 @@ export function activate(context: ExtensionContext) {
             options: {
                 env: {
                     ...process.env,
-                    RUST_LOG: 'debug'  // If we add logging
+                    ARIA_LS_LOG: 'debug'  // LSP server log level
                 }
             }
         }
