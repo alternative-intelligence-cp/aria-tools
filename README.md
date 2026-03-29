@@ -1,5 +1,8 @@
 # aria-tools
 
+[![CI](https://github.com/alternative-intelligence-cp/aria-tools/actions/workflows/ci.yml/badge.svg)](https://github.com/alternative-intelligence-cp/aria-tools/actions/workflows/ci.yml)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+
 Developer tools for the [Aria programming language](https://github.com/alternative-intelligence-cp/aria).
 
 ## Components
