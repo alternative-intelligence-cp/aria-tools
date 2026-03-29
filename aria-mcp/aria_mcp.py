@@ -65,12 +65,28 @@ SAFETY_BIN  = _find_bin("ARIA_SAFETY_BIN",
                          REPO_ROOT / "tools" / "aria-safety" / "aria-safety") \
               or shutil.which("aria-safety")
 
-ARIA_REF_MD = os.environ.get("ARIA_REF_MD",
-                              str(REPO_ROOT / ".internal" / "aria_ref.md"))
+
+def _find_ref_md() -> str:
+    """Resolve aria_ref.md: env var → common locations → fallback."""
+    env = os.environ.get("ARIA_REF_MD")
+    if env and Path(env).is_file():
+        return env
+    candidates = [
+        REPO_ROOT / "aria-docs" / "reference" / "aria_ref.md",
+        REPO_ROOT / ".internal" / "aria_ref.md",
+        ARIA_ROOT / "docs" / "aria_ref.md",
+    ]
+    for c in candidates:
+        if c.is_file():
+            return str(c)
+    return str(candidates[0])  # default even if missing
+
+
+ARIA_REF_MD = _find_ref_md()
 
 SPECIALIST_SCRIPT = (
     os.environ.get("SPECIALIST_SCRIPT")
-    or str(REPO_ROOT / "tools" / "aria_specialist_server.py")
+    or str(REPO_ROOT / "aria-specialist" / "aria_specialist_server.py")
 )
 ARIA_ASK_DISABLED = os.environ.get("ARIA_ASK_DISABLED", "").strip() not in ("", "0")
 
@@ -235,16 +251,21 @@ def aria_compile(source: str) -> dict:
         proc = subprocess.run(
             [ARIAC_BIN, src_path, "-o", out_path],
             capture_output=True, text=True, timeout=30,
+            env={**os.environ, "NO_COLOR": "1"},
         )
         errors: list[dict]   = []
         warnings: list[dict] = []
+
+        # Strip ANSI escape sequences from compiler output
+        ansi_re = re.compile(r'\x1b\[[0-9;]*[mGKHF]')
 
         # Match patterns like "file.aria:10:5: error: message" or "error: message"
         diag_re = re.compile(r'^(?:(.+?):(\d+)(?::(\d+))?:\s*)?'
                              r'(error|warning|note):\s*(.+)$', re.IGNORECASE)
 
         for line in (proc.stderr + proc.stdout).splitlines():
-            m = diag_re.match(line.strip())
+            clean = ansi_re.sub('', line).strip()
+            m = diag_re.match(clean)
             if m:
                 entry: dict = {"message": m.group(5)}
                 if m.group(2):
@@ -256,9 +277,9 @@ def aria_compile(source: str) -> dict:
                     errors.append(entry)
                 else:
                     warnings.append(entry)
-            elif line.strip():
-                l = line.lower()
-                entry = {"message": line.strip()}
+            elif clean:
+                l = clean.lower()
+                entry = {"message": clean}
                 if "error" in l:
                     errors.append(entry)
                 elif "warning" in l or "warn" in l:
@@ -538,7 +559,7 @@ TOOL_DEFINITIONS = [
     },
 ])
 
-SERVER_INFO  = {"name": "aria-mcp", "version": "0.2.15"}
+SERVER_INFO  = {"name": "aria-mcp", "version": "0.3.3"}
 CAPABILITIES = {"tools": {}, "resources": {}}
 
 
