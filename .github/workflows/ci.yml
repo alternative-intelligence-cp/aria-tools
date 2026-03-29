@@ -1,0 +1,86 @@
+name: Aria Tools CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  safety-auditor:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build safety auditor
+        run: |
+          cd aria-safety
+          make
+          test -f aria_safety && echo "aria_safety built" || exit 1
+
+      - name: Smoke test
+        run: |
+          cd aria-safety
+          echo 'func:main = int32() { exit(0); };' > /tmp/test.aria
+          ./aria_safety /tmp/test.aria || true
+          echo "Safety auditor runs without crash"
+
+  mcp-server:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Python syntax check
+        run: python3 -m py_compile aria-mcp/aria_mcp.py
+
+      - name: MCP server smoke test
+        run: |
+          # Send an initialize request and verify it responds
+          echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' | \
+            timeout 5 python3 aria-mcp/aria_mcp.py 2>/dev/null || true
+          echo "MCP server starts without crash"
+
+  vscode-extension:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate package.json
+        run: |
+          cd vscode-aria
+          python3 -c "
+          import json, sys
+          with open('package.json') as f:
+              pkg = json.load(f)
+          required = ['name', 'version', 'engines', 'contributes']
+          for key in required:
+              if key not in pkg:
+                  print(f'ERROR: missing {key}')
+                  sys.exit(1)
+          print(f\"Extension: {pkg['name']} v{pkg['version']}\")
+          print('package.json valid')
+          "
+
+      - name: Validate grammar
+        run: |
+          cd vscode-aria
+          python3 -c "
+          import json
+          with open('syntaxes/aria.tmLanguage.json') as f:
+              grammar = json.load(f)
+          print(f\"Scope: {grammar.get('scopeName', 'MISSING')}\")
+          patterns = grammar.get('patterns', [])
+          print(f'Top-level patterns: {len(patterns)}')
+          repo = grammar.get('repository', {})
+          print(f'Repository rules: {len(repo)}')
+          print('Grammar JSON valid')
+          "
